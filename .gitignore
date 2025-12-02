@@ -1,2 +1,5 @@
+__pycache__/
 .DS_Store
 __init__.py
+.gitignore
+*.csv
