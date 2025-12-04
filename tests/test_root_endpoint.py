@@ -7,9 +7,12 @@ from app.api import app
 
 @pytest.fixture
 def client():
+    """ Generate Test Client """
     return testclient.TestClient(app)
 
 class TestRootEndpoint:
+    """ Unit Test for Root Endpoint """
+
     def test_get_root(self, client) -> None:
         """ Testing GET / endpoint """
         response = client.get("/")
@@ -29,6 +32,7 @@ class TestRootEndpoint:
         assert response.json() == "pong"
 
     def test_api_docs(self, client) -> None:
+        """ Testing GET /docs endpoint """
         response = client.get("/docs")
         assert response.status_code == status.HTTP_200_OK
         assert "text/html" in response.headers["content-type"]

@@ -5,6 +5,7 @@ from typing import Optional
 """ Request Validation Classes """
 
 class FilterDatasetRequest(BaseModel):
+    """ BaseModel for Searching with a Query. """
     query: str
 
     @field_validator('query')
@@ -15,20 +16,16 @@ class FilterDatasetRequest(BaseModel):
 """ Response Validation Classes """
 
 class MessageResponse(BaseModel):
+    """ BaseModel for a default Message Response. """
     msg: str
     code: int
     data: Optional[dict] = None
 
-    def log(self) -> None:
-        pass
-
 class DataResponse(BaseModel):
+    """ BaseModel for a default Data Response. """
     msg: str
     code: int
     data: dict
 
     def check_data(self) -> None:
-        pass
-
-    def log(self) -> None:
         pass

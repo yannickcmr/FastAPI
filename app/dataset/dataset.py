@@ -5,6 +5,7 @@ import pandas as pd
 """ Response Class """
 
 class Response(Protocol):
+    """ Default Response Class """
     msg: str
     code: int
     data: Optional[dict] = None
@@ -14,6 +15,8 @@ class Response(Protocol):
 """ CSV Reader Class """
 
 class DatasetReader:
+    """ Test Dataset Reader for .csv Files. """
+
     def __init__(self, filename: str, delimiter: str = ";", chunk_size: int = 10_000):
         self.filename = filename
         self._chunk_size = chunk_size
@@ -23,14 +26,16 @@ class DatasetReader:
         self.get_columns()
 
     def log_settings(self) -> None:
+        """ Method to log current settings. """
         print(f"{self.filename=} - {self._chunk_size=}")
         print(f"columns: {self.get_columns()['data']['columns']}")
-    
+
     def get_columns(self) -> Response:
+        """ Method for getting all the .csv file's columns. """
         try:
             columns = pd.read_csv(self.filename, nrows=1, delimiter=self._delimiter)
             columns = columns.columns.tolist()
-        
+
         except Exception as e:
             raise MemoryError(f"Could not get columns: {e}")
 
@@ -43,6 +48,7 @@ class DatasetReader:
         }
 
     def find(self, query = "index==index") -> Response:
+        """ Method for filtering the .csv file with a query. """
         try:
             columns = self.get_columns()
             dataframe = pd.DataFrame(columns=columns['data']['columns'])
@@ -51,13 +57,13 @@ class DatasetReader:
                 try:
                     data = chunk.query(query)
                     dataframe = pd.concat([dataframe, data], ignore_index=True)
-                
+
                 except Exception as e:
                     print(f"Could not parse chunks: {e}")
 
             if len(dataframe) == 0:
                 raise ValueError(f"Could not find any results for query: {query}")
-        
+
         except Exception as e:
            print(f"Could not find query in dataset: {e}")
 
@@ -66,7 +72,7 @@ class DatasetReader:
             'code': 200,
             'data': {
                 'query': query,
-                'result': dataframe.to_json() 
+                'result': dataframe.to_json()
             }
         }
 
@@ -79,7 +85,7 @@ if __name__ == "__main__":
         print(f"{bar} - {msg} - {bar}")
 
     log_info("Test running!")
-    
+
     FILENAME = """business_sales.csv"""
 
     dataset = DatasetReader(FILENAME, chunk_size=10000)
