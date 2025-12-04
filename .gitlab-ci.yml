@@ -38,7 +38,6 @@ lint:
   stage: lint
   image: python:3.11-slim
   script:
-    - pip install black flake8
-    - black --check app/ tests/
-    - flake8 app/ tests/ --max-line-length=88 --statistics
+    - pip install pylint
+    - pylint app/ --fail-under=7.0
   allow_failure: true

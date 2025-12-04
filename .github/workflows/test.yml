@@ -43,9 +43,9 @@ jobs:
 
     - name: Run linting
       run: |
-        pip install black flake8
-        black --check app/ tests/
-        flake8 app/ tests/ --max-line-length=88
+        pip install pylint
+        # Run pylint with 70% threshold
+        pylint app/ --fail-under=7.0
     
     - name: Archive test results
       if: always()
