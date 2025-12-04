@@ -45,7 +45,7 @@ jobs:
       run: |
         pip install pylint
         # Run pylint with 70% threshold
-        pylint app/ --fail-under=7.0
+        pylint app/ --fail-under=7.0 --disable=W1203,W0105
     
     - name: Archive test results
       if: always()

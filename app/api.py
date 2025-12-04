@@ -17,6 +17,7 @@ from app.dataset.dataset import DatasetReader
 Logger = create_logger()
 Logger.info("=> Logging initialized.")
 
+
 """ Multithreading Option """
 
 executor = ThreadPoolExecutor(1)
@@ -51,6 +52,11 @@ app.add_middleware(
 
 @app.get("/")
 def root() -> MessageResponse:
+    """ Default Endpoint.
+
+    Returns:
+        MessageResponse: Dict containing welcome msg, code and data.
+    """
     return {
         "msg": "Welcome to the FastAPI. Please visit http://localhost:8000/docs for more details.",
         "code": 200,
@@ -59,6 +65,14 @@ def root() -> MessageResponse:
 
 @app.get("/ping")
 def pong(log_lvl = "info") -> str:
+    """ Endpoint for pinging.
+
+    Args:
+        log_lvl (str, optional): Logger level. Defaults to "info".
+
+    Returns:
+        str: pong
+    """
     Logger.setLevel(log_lvl.upper())
     Logger.debug("pong")
     return "pong"
@@ -68,28 +82,38 @@ def get_versions(log_lvl = "info") -> MessageResponse:
     """ Endpoint to get the current versions.
 
     Returns:
-        dict: Dict containing all current versions.
+        dict: Dict containing code, msg and all current versions.
     """
     Logger.setLevel(log_lvl.upper())
     Logger.info(f"App Version [{app.version}]")
 
     return {
-        "msg": "/version success.",
-        "code": 200,
-        "data": None
+        'msg': "/version success.",
+        'code': 200,
+        'data': {
+            'version': app.version
+        }
     }
 
 
 @app.get("/get_data")
 async def get_data(log_lvl = "info") -> DataResponse:
+    """ Endpoint for getting all the data from the .csv file.
+
+    Args:
+        log_lvl (str, optional): Logger level. Defaults to "info".
+
+    Returns:
+        DataResponse: Dict containing code, msg and .csv data.
+    """
     Logger.setLevel(log_lvl.upper())
-    Logger.info(f"==> Get Data Request")
+    Logger.info("==> Get Data Request")
 
     data = Dataset.find()
-    Logger.debug(f"==> Get Data Response: {data=}")
+    Logger.debug(f"{data=}")
 
     if data['code'] != 200:
-        Logger.warning(f"Something is wrong.")
+        Logger.warning("Something is wrong.")
 
     return {
         'msg': "/get_data success.",
@@ -99,14 +123,23 @@ async def get_data(log_lvl = "info") -> DataResponse:
 
 @app.post("/filter_data")
 async def filter_data(data: FilterDatasetRequest, log_lvl = "info") -> DataResponse:
+    """ Endpoint for gathering filtered .csv data.
+
+    Args:
+        data (FilterDatasetRequest): Body containing query.
+        log_lvl (str, optional): Logger level. Defaults to "info".
+
+    Returns:
+        DataResponse: Dict containing code, msg and filtered .csv data.
+    """
     Logger.setLevel(log_lvl.upper())
-    Logger.info(f"==> Filter Data Request")
+    Logger.info("==> Filter Data Request")
 
     data = Dataset.find(data.query)
-    Logger.debug(f"==> Filter Data Response: {data=}")
+    Logger.debug(f"{data=}")
 
     if data['code'] != 200:
-        Logger.warning(f"Something is wrong.")
+        Logger.warning("Something is wrong.")
 
     return {
         'msg': "/filter_data success.",
@@ -119,5 +152,5 @@ async def filter_data(data: FilterDatasetRequest, log_lvl = "info") -> DataRespo
 
 if __name__ == "__main__":
     # Terminal: uvicorn app.api:app --reload --host 0.0.0.0 --port 8000
-    print("=> Running FastAPI.")
+    Logger.info("=> Running FastAPI.")
     uvicorn.run("api:app", reload=True, port=8000)

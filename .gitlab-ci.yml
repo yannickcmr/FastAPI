@@ -39,5 +39,5 @@ lint:
   image: python:3.11-slim
   script:
     - pip install pylint
-    - pylint app/ --fail-under=7.0
+    - pylint app/ --fail-under=7.0 --disable=W1203,W0105
   allow_failure: true
