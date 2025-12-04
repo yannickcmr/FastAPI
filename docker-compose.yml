@@ -1,0 +1,10 @@
+name: git_repository
+services:
+  fastapi:
+    container_name: FastAPI 
+    build:
+      context: ./FastAPI/
+      dockerfile: Dockerfile 
+    ports:
+      - '8000:8000'
+    restart: always
