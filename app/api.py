@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config.documentation import DESCRIPTION
 from app.config.logging_config import create_logger
 from app.validation.messages import FilterDatasetRequest
 from app.validation.messages import MessageResponse, DataResponse
@@ -40,7 +41,7 @@ app = FastAPI(
         "email": ""
     },
     summary="FastAPI example to start from :)",
-    description=""
+    description=DESCRIPTION
 )
 app.add_middleware(
     CORSMiddleware,
