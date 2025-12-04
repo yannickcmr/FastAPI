@@ -1,0 +1,57 @@
+stages:
+  - test
+  - security
+  - lint
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+test:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install --upgrade pip
+    - pip install -r requirements.txt
+  script:
+    - pytest tests/ --cov=app --cov-report=xml --cov-report=html -v
+  coverage: '/TOTAL.*\s+(\d+%)$/'
+  artifacts:
+    paths:
+      - coverage_html/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    when: always
+  only:
+    - merge_requests
+    - main
+    - develop
+
+security-scan:
+  stage: security
+  image: python:3.11-slim
+  script:
+    - pip install bandit
+    - bandit -r app/ -f json -o bandit-report.json
+  artifacts:
+    paths:
+      - bandit-report.json
+    when: always
+  allow_failure: true
+
+lint:
+  stage: lint
+  image: python:3.11-slim
+  script:
+    - pip install black flake8
+    - black --check app/ tests/
+    - flake8 app/ tests/ --max-line-length=88 --statistics
+  allow_failure: true
