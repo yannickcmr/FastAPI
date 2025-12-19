@@ -6,7 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config.documentation import DESCRIPTION
+from app.config.documentation import DESCRIPTION, APP_VERSION
 from app.config.logging_config import create_logger
 from app.validation.messages import FilterDatasetRequest
 from app.validation.messages import MessageResponse, DataResponse
@@ -35,7 +35,7 @@ Logger.info("=> Dataset ready.")
 
 app = FastAPI(
     title="FastAPI",
-    version="0.6.9",
+    version=APP_VERSION,
     contact={
         "name": "Yannick Ciomer",
         "email": ""
