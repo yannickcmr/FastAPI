@@ -1,5 +1,6 @@
 """ File containing the FastAPI Description. """
 
+APP_VERSION = "0.6.9"
 DESCRIPTION = """ 
 ## FastAPI Example for Sales
 A lightweight REST API for accessing and filtering business sales data, designed for easy integration and real-time analytics.
